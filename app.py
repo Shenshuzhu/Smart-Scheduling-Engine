@@ -7,7 +7,7 @@ import sys # 调用sys.executable
 # 1. 网页全局配置
 st.set_page_config(page_title="智能制造排产系统", page_icon="🏭", layout="wide")
 st.title("🏭 基于启发式算法的智能排产系统 (CUT & AOI)")
-st.markdown("上传生产数据，一键生成全局最优排产 Excel。")
+st.markdown("上传生产数据，一键生成排产 Excel。")
 
 st.markdown("---")
 

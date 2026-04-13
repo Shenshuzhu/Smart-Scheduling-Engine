@@ -2,31 +2,29 @@ import streamlit as st
 import subprocess
 import os
 import pandas as pd
-import sys # 修改
+import sys # 调用sys.executable
 
 # 1. 网页全局配置
 st.set_page_config(page_title="智能制造排产系统", page_icon="🏭", layout="wide")
 st.title("🏭 基于启发式算法的智能排产系统 (CUT & AOI)")
 st.markdown("上传最新生产数据，设置换线约束参数，一键生成全局最优排产 Excel。")
 
-# 2. 侧边栏：文件上传与参数设置
-st.sidebar.header("📁 数据注入区")
-st.sidebar.info("请上传最新的订单需求表，系统将自动替换旧数据进行推演。")
+st.markdown("---")
+
+# 2. 主界面：数据注入
+st.subheader("📁 第一步：数据注入")
+st.info("请上传最新的订单需求表，系统将自动替换旧数据进行推演。")
 
 # 允许用户上传需求表
-uploaded_demand = st.sidebar.file_uploader("1. 上传新需求表 (demand.csv)", type=['csv'])
+uploaded_demand = st.file_uploader("1. 上传新需求表 (demand.csv)", type=['csv'])
 
-st.sidebar.markdown("---")
-st.sidebar.header("⚙️ 约束参数设置 (示例)")
-# 这里展示了滑动条和数字输入框，未来可以传给你的引擎
-cut_day_limit = st.sidebar.slider("CUT 白班最大换线次数", min_value=1, max_value=10, value=4)
-aoi_day_limit = st.sidebar.number_input("AOI 日最大换线次数", min_value=1, max_value=5, value=2)
+st.markdown("---")
 
 # 3. 主界面：执行排产
-st.write("### 🚀 排产执行控制台")
+st.subheader("🚀 第二步：排产推演")
 
 if st.button("开始运行智能排产引擎", type="primary"):
-    with st.spinner("系统正在进行微观时序推演与产能分配，请稍候 (约需几秒至十几秒)..."):
+    with st.spinner("系统正在进行时序推演与产能分配，请稍候 (约需几秒至十几秒)..."):
 
         # 如果用户上传了新表格，就用新表格覆盖默认的 demand_202603.csv
         if uploaded_demand is not None:
@@ -34,14 +32,13 @@ if st.button("开始运行智能排产引擎", type="primary"):
                 f.write(uploaded_demand.getbuffer())
             st.toast("✅ 最新需求表已成功载入引擎！")
 
-        # 注意：这里的传参逻辑为了极简，我们直接用 subprocess 调用你跑通的 .py 脚本
-        # 未来你可以将参数 (cut_day_limit) 通过命令行参数传入引擎
         try:
-            # 运行你的核心排产算法
+            # 运行核心排产算法
             result = subprocess.run(
-                [sys.executable, "scheduling0325_updated_v14.py"], # 修改了sys.executable
+                [sys.executable, "scheduling0325_updated_v14.py"], # 修改调用python为sys.executable
                 capture_output=True,
-                text=True
+                text=True,
+                encoding="utf-8" # 强制指定编码为Linux默认编码UTF-8
             )
 
             if result.returncode == 0:
@@ -58,7 +55,7 @@ if st.button("开始运行智能排产引擎", type="primary"):
                             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         )
             else:
-                st.error("❌ 引擎运行遇到报错，请联系算法工程师排查：")
+                st.error("❌ 引擎运行遇到错误，请联系工程师排查：")
                 st.code(result.stderr)
 
         except Exception as e:

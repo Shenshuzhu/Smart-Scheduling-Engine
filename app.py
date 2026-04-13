@@ -7,16 +7,18 @@ import sys # 调用sys.executable
 # 1. 网页全局配置
 st.set_page_config(page_title="智能制造排产系统", page_icon="🏭", layout="wide")
 st.title("🏭 基于启发式算法的智能排产系统 (CUT & AOI)")
-st.markdown("上传最新生产数据，设置换线约束参数，一键生成全局最优排产 Excel。")
+st.markdown("上传生产数据，一键生成全局最优排产 Excel。")
 
 st.markdown("---")
 
 # 2. 主界面：数据注入
 st.subheader("📁 第一步：数据注入")
-st.info("请上传最新的订单需求表，系统将自动替换旧数据进行推演。")
+col1, col2 = st.columns([1, 2]) # 将页面水平分为两列，底框分布更美观些
+with col1:
+    st.info("请上传最新的订单需求表，系统将自动替换旧数据进行推演。")
 
 # 允许用户上传需求表
-uploaded_demand = st.file_uploader("1. 上传新需求表 (demand.csv)", type=['csv'])
+    uploaded_demand = st.file_uploader("1. 上传新需求表 (demand.csv)", type=['csv'])
 
 st.markdown("---")
 

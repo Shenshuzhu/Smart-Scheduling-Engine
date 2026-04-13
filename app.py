@@ -2,6 +2,7 @@ import streamlit as st
 import subprocess
 import os
 import pandas as pd
+import sys # 修改
 
 # 1. 网页全局配置
 st.set_page_config(page_title="智能制造排产系统", page_icon="🏭", layout="wide")
@@ -38,7 +39,7 @@ if st.button("开始运行智能排产引擎", type="primary"):
         try:
             # 运行你的核心排产算法
             result = subprocess.run(
-                ["python", "scheduling0325_updated_v14.py"],
+                [sys.executable, "scheduling0325_updated_v14.py"], # 修改了sys.executable
                 capture_output=True,
                 text=True
             )
